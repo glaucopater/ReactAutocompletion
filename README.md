@@ -1,5 +1,5 @@
-Reddit Image Scroll Viewer
+AutoCompletion
 ===
 
-Made with  React JS components infinite scroll and Reddit Api 
+A React JS Web Component for auto complete feature 
 ---
