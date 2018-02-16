@@ -1,0 +1,87 @@
+html, body, ul {
+    
+  /*Reset default Browser values*/
+  margin: 0; 
+  padding: 0;
+  font-family: 'Roboto', Arial, sans-serif; 
+  font-family: Helvetica, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  padding:5px;
+}
+
+*
+{
+    box-sizing: border-box;
+}
+
+input 
+{
+  width: 240px;
+  height: 30px;
+  padding: 10px 20px;  
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+label
+{  
+  margin-right: 3px;
+}
+ul
+{
+  padding: 10px 20px;
+  width: 240px;  
+  z-index:1000;
+}
+li
+{ 
+  margin: 3px 0;
+  padding: 10px 0;    
+  list-style-type:none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-top   : 1px solid #ccc;
+}
+
+li:hover
+{
+  background-color: #CFD9E9;  
+  outline: 1px solid #ccc;
+  cursor:pointer;
+}
+
+
+.myHidden
+{
+  display:none;
+}
+
+#content
+{
+  margin: 0 50px;
+}
+
+.autoCompletionBox
+{
+  position: relative;
+  margin:0px;
+} 
+
+.show
+{
+  border:1px solid #ccc;  
+  border-top: 0;    
+}
+
+
+div.matchedItem
+{
+    display: inline;
+}
+
+.highlight
+{
+    font-weight: bold;
+    color:#6284b7;
+}
