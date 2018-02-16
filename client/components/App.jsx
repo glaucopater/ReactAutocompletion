@@ -26,8 +26,7 @@ class ItemList extends React.Component {
   constructor(props) {
     super(props); 
     this.handleTextClick = this.handleTextClick.bind(this);
-      
-  }
+        }
     
      handleTextClick(event) {           
          console.log("Item selected!");
@@ -58,8 +57,7 @@ class ItemList extends React.Component {
 class App extends React.Component {
   constructor() {
     super();
-    console.log("init");
-    
+      
     this.state = {
       time: null,
       loading: true,

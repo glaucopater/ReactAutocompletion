@@ -22,10 +22,16 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "create-react-class": "^15.6.2",
+    "css-loader": "^0.28.9",
     "html-webpack-plugin": "^2.30.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "style-loader": "^0.20.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
+  },
+  "devDependencies": {
+    "less": "^3.0.1",
+    "less-loader": "^4.0.5"
   }
 }
