@@ -1,7 +1,7 @@
 AutoCompletion
 ===
 
-A React JS Web Component for auto complete feature 
+A React JS Web Component with auto complete feature 
 ---
 
 I tried to limit the number of packages in order to have a small code solution.
@@ -15,6 +15,8 @@ As a stylesheet preprocessor I decided to use LESS.
 
 The main App component manages the main container with the input box. On page loading the remote live data are retrieved.
 The second small class manages the results in a list.
-The idea was to present all the found matching items for the auto completion box highlighting the  
-the section of the matched content.
+The idea was to present all the found matching items for the auto completion box highlighting the section of the matched content.
 
+The Enter Key clear all the result if the search field is empty!
+
+To run the app: npm install && npm start
