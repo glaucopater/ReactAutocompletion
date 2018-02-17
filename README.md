@@ -19,4 +19,7 @@ The idea was to present all the found matching items for the auto completion box
 
 The Enter Key clear all the result if the search field is empty!
 
+Keyboard arrows (up, down) allow to move between suggested items
+
+ 
 To run the app: npm install && npm start
