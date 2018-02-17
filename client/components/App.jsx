@@ -5,40 +5,73 @@ import axios from 'axios';
 
 function Highlight(props)
 {    
-  var fullString = props.data.matchedItem.title;
-  var searchedValue = props.data.searchedValue;
-  var position = props.data.matchedPosition;
-   
-  var offset = 10;
-  var leftSide = fullString.substring(position-offset, position);
-    if (position!=0)
+    var fullString = props.data.matchedItem.title;
+    var searchedValue = props.data.searchedValue;
+    var position = props.data.matchedPosition;
+    var myKey = props.myKey;
+    var cursor = props.cursor;     
+    var id = props.data.matchedItem.id;
+
+    var offset = 10;
+    var leftSide = fullString.substring(position-offset, position);
+    if (position>offset)
         leftSide = "..."+leftSide;
+
+    var rightSide = fullString.substring(position+searchedValue.length,position+searchedValue.length+offset);
+    rightSide += "..."; 
     
-  var rightSide = fullString.substring(position+searchedValue.length,position+searchedValue.length+offset);
-  rightSide += "...";
-    
-  return (<div className="matchedItem" >{leftSide}<span className="highlight">{searchedValue}</span>{rightSide}</div>);  
+    return (<div className={`matchedItem ${cursor === myKey ? 'active' : ''}`}
+			  >{leftSide}<span className="highlight">{searchedValue}</span>{rightSide}</div>);  
 }
   
     
 class ItemList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTextClick = this.handleTextClick.bind(this); 
+        this.state = {highlightedValue: -1};
+    }  
     
-  constructor(props) {
-    super(props); 
-    this.handleTextClick = this.handleTextClick.bind(this);
-        }
-    
-     handleTextClick(event) {           
+    handleTextClick(e) {           
          console.log("Item selected!");
-     }   
+     }       
+    
+    componentDidMount(nextProps) {
+        console.log("componentDidMount ", nextProps);
+
+        var that = this;
+
+        document.onkeydown = function (e) {
+
+            switch (e.keyCode) {
+                case 38: // up 
+                    if (this.state.highlightedValue > 0) {
+                        this.setState({
+                            highlightedValue: this.state.highlightedValue -= 1
+                        });
+                    }
+                    break;
+                case 40: // down 
+                    if (this.state.highlightedValue < this.props.info.length-1) {
+                        this.setState({
+                            highlightedValue: this.state.highlightedValue += 1
+                        });
+                    }
+                    break;
+            }
+        }.bind(this);
+ 
+    }
+	  
      
       
     render()
       { 
           const info = this.props.info;
+	      const cursor = this.props.cursor; 
                  
           const listItems = info.map((item,i) =>    
-            <li key={item.id}><Highlight data={item}/></li>
+            <li key={i}><Highlight data={item} cursor={this.state.highlightedValue} myKey={i}/></li>
           );
           return (
             <ul className={`autoCompletionBox ${listItems.length>0 ? 'show' : ''}`} onClick={this.handleTextClick}>{listItems}</ul>
@@ -69,6 +102,8 @@ class App extends React.Component {
     this.handleTextClick = this.handleTextClick.bind(this)   
     this.handleKeyPress = this.handleKeyPress.bind(this)     
     this.handleKeyDown = this.handleKeyDown.bind(this)
+     
+      
   }
 
   componentDidMount() {  
@@ -112,7 +147,7 @@ class App extends React.Component {
       
   }
   
-   handleChange(event){         
+    handleChange(event){         
        this.search(event.target.value);
        if(event.target.value!=='')
        {
@@ -147,9 +182,7 @@ class App extends React.Component {
         }
          
     }
-    
-    
-
+     
   render() {
     var content;
     var that = this;
@@ -157,7 +190,7 @@ class App extends React.Component {
       content = 'Loading remote content from...';
     } else {             
       
-        content = <ItemList data={that.state.matches} info={that.state.matchesInfo}/>;
+        content = <ItemList data={that.state.matches} info={that.state.matchesInfo}  cursor={that.state.cursor}/>;
     }
 
     return (
@@ -167,7 +200,7 @@ class App extends React.Component {
         <div>
           <h2>AutoCompletion Web Component</h2>
           <div> 
-           <input className="input" type="text" placeholder="Search..." defaultValue="" onChange={this.handleChange} onClick={this.handleTextClick} onKeyPress={this.handleKeyPress} onKeyDown={ this.handleKeyDown } /> 
+           <input className="input" type="text" placeholder="Search..." defaultValue="" onChange={this.handleChange} onClick={this.handleTextClick} onKeyPress={this.handleKeyPress} onKeyDown={ this.handleKeyDown } onKeyDown={ this.handleKeyDown }/> 
             </div>
         {content}
         </div>
