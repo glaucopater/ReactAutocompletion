@@ -17,17 +17,30 @@ module.exports = {
     
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-      { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ },
-      //{ test: /\.less$/, loader: 'less-loader', exclude: /node_modules/ },
-        
-        {
-      test: /\.less$/,
-      loaders: ['style-loader', 'css-loader', 'less-loader']
-    }
+      { test: /\.js$/,   loader: 'babel-loader', exclude: /node_modules/, query: {
+                     presets: ['es2015']
+                 } },
+      { test: /\.jsx$/,  loader: 'babel-loader', exclude: /node_modules/ },        
+      { test: /\.less$/, loaders: ['style-loader', 'css-loader', 'less-loader']}
 
     ]
   },
-  plugins: [HtmlWebpackPluginConfig]
+  plugins: [HtmlWebpackPluginConfig],
+    devServer: {
+    proxy: {
+      "/coinlist": {
+      target: 'https://www.cryptocompare.com/api/data/coinlist/',
+      pathRewrite: { '^/coinlist': '' },
+      changeOrigin: true,
+      secure: false
+      },
+      "/houses": {
+      target: 'https://anapioficeandfire.com/api/houses/',
+      pathRewrite: { '^/houses': '' },
+      changeOrigin: true,
+      secure: false
+      }
+    }
+    }
 
 }

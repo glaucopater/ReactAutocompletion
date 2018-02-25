@@ -7,8 +7,15 @@ A React JS Web Component with auto complete feature
 I tried to limit the number of packages in order to have a small code solution.
 For ajax request I used Axios, which is one of the fastest ajax solution for React Js.
 
-Note the at the moment the remote url retrieves data from https://jsonplaceholder.typicode.com/posts 
-but it is very easy to adapt to any kind of feed.
+Note the at the moment the remote call retrieves data from https://jsonplaceholder.typicode.com/posts 
+This json model has a very common structure:
+{
+    "userId": 1,
+    "id": 1,
+    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+    "body": 
+}
+so it is very easy to adapt to any kind of feed.
 
 
 As a stylesheet preprocessor I decided to use LESS.

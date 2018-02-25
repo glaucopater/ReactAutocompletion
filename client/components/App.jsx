@@ -3,16 +3,35 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';  
    
 
-function Highlight(props)
-{    
-    var fullString = props.data.matchedItem.title;
+ const getTargetData = (responseData,stringToExplode) => {
+            var subdataElements = stringToExplode.split(".");
+            var currentLevel = subdataElements[0];
+            subdataElements.shift();
+            if (subdataElements.length===0)
+                {
+                    if(currentLevel!="")
+                        return responseData[currentLevel];
+                    else
+                        return responseData;
+                }
+            else
+                {
+                    var newStringToExplode = subdataElements.join(".");
+                    return getTargetData(responseData[currentLevel],newStringToExplode);
+                }
+    }
+
+ const Highlight = (props) =>{    
+    
+    
+    var fullString = getTargetData(props.data.matchedItem,props.dataTargetKey);
     var searchedValue = props.data.searchedValue;
     var position = props.data.matchedPosition;
     var myKey = props.myKey;
     var cursor = props.cursor;     
-    var id = props.data.matchedItem.id;
+    var id = props.data.matchedItem.id; 
 
-    var offset = 10;
+    var offset = 5;
     var leftSide = fullString.substring(position-offset, position);
     if (position>offset)
         leftSide = "..."+leftSide;
@@ -32,16 +51,15 @@ class ItemList extends React.Component {
         this.state = {highlightedValue: -1};
     }  
     
-    handleTextClick(e) {           
+    handleTextClick = (e) => {           
          console.log("Item selected!");
      }       
     
-    componentDidMount(nextProps) {
-        console.log("componentDidMount ", nextProps);
+    componentDidMount= (nextProps) => { 
 
         var that = this;
 
-        document.onkeydown = function (e) {
+        document.onkeydown = function(e){
 
             switch (e.keyCode) {
                 case 38: // up 
@@ -65,13 +83,14 @@ class ItemList extends React.Component {
 	  
      
       
-    render()
+    render = () =>
       { 
           const info = this.props.info;
 	      const cursor = this.props.cursor; 
+          const dataTargetKey = this.props.dataTargetKey;
                  
           const listItems = info.map((item,i) =>    
-            <li key={i}><Highlight data={item} cursor={this.state.highlightedValue} myKey={i}/></li>
+            <li key={i}><Highlight data={item} cursor={this.state.highlightedValue} myKey={i} dataTargetKey={dataTargetKey}/></li>
           );
           return (
             <ul className={`autoCompletionBox ${listItems.length>0 ? 'show' : ''}`} onClick={this.handleTextClick}>{listItems}</ul>
@@ -88,7 +107,7 @@ class ItemList extends React.Component {
   
 
 class App extends React.Component {
-  constructor() {
+  constructor()   {
     super();
       
     this.state = {
@@ -101,20 +120,23 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)         
     this.handleTextClick = this.handleTextClick.bind(this)   
     this.handleKeyPress = this.handleKeyPress.bind(this)     
-    this.handleKeyDown = this.handleKeyDown.bind(this)
-     
-      
+    this.handleKeyDown = this.handleKeyDown.bind(this) 
   }
+    
+   
 
-  componentDidMount() {  
+  componentDidMount = () => {  
     axios.get(this.props.url)
       .then(response => {
+        
+        var targeData = getTargetData(response.data,this.props.dataTarget);
         this.setState({
-          data: response.data,
+          data: targeData,
           matches: [],
           matchesInfo : [],
           loading: false
         });
+        //console.log(getTargetData(response.data,this.props.dataTarget));
       })
       .catch(error => {
         console.log(error);
@@ -130,12 +152,13 @@ class App extends React.Component {
     var val = that.state.searchValue;
     if (val.trim()!="")
     {
-        for (var i=0;i<items.length;i++)
+      for (var i=0;i<10;i++)
       {
-        var matchedPosition = items[i].title.lastIndexOf(val);
+        var dataTargetKeyVal = getTargetData(items[i],this.props.dataTargetKey);
+      //    console.log(dataTargetKeyVal);
+        var matchedPosition = dataTargetKeyVal.lastIndexOf(val);
         if (matchedPosition!=-1)
-        {            
-         currentMatchesInfo.push({'id':items[i].id,'matchedItem':items[i],'searchedValue':val,'matchedPosition':matchedPosition});
+        {     currentMatchesInfo.push({'id':items[i].id,'matchedItem':items[i],'searchedValue':val,'matchedPosition':matchedPosition});
         }
       }    
         if (currentMatchesInfo.length>0)
@@ -147,7 +170,7 @@ class App extends React.Component {
       
   }
   
-    handleChange(event){         
+    handleChange = (event) => {         
        this.search(event.target.value);
        if(event.target.value!=='')
        {
@@ -158,12 +181,11 @@ class App extends React.Component {
     }
   
  
-    handleTextClick(event) {  
+    handleTextClick = (event) => {  
         event.target.value='' 
      }   
      
-    handleKeyDown(event)
-    {
+    handleKeyDown = (event) => {
         /*Delete key */
         if (event.keyCode==8) {
             if (event.target.value=="" || this.state.searchValue=="")
@@ -173,7 +195,7 @@ class App extends React.Component {
         } 
     }
     
-    handleKeyPress(event) {
+    handleKeyPress = (event) => {
         if (event.key === 'Enter' || event.key=='Delete') {
             if (event.target.value=="")
                 {
@@ -183,14 +205,14 @@ class App extends React.Component {
          
     }
      
-  render() {
+  render = () => {
     var content;
     var that = this;
     if (that.state.loading) {
       content = 'Loading remote content from...';
     } else {             
       
-        content = <ItemList data={that.state.matches} info={that.state.matchesInfo}  cursor={that.state.cursor}/>;
+        content = <ItemList data={that.state.matches} info={that.state.matchesInfo}  cursor={that.state.cursor} dataTargetKey={that.props.dataTargetKey} />;
     }
 
     return (
